@@ -8,7 +8,7 @@ app.post('/api/registrar', async (req, res) => {
     const { nombre, correo, clave, descripcion } = req.body;
     try {
         const user = await prisma.usuario.create({
-            data: { nombre, correo, clave, descripcion, estado: true }
+            data: { nombre, correo, clave, descripcion}
         });
         res.json({ estado: 200, mensaje: 'Se realizo la peticion correctamente' });
     } catch (error) {
@@ -18,6 +18,6 @@ app.post('/api/registrar', async (req, res) => {
 
 // Otros endpoints...
 
-app.listen(3000, () => {
-    console.log('API running on http://localhost:3000');
+app.listen(5432, () => {
+    console.log('API running on http://localhost:5432');
 });

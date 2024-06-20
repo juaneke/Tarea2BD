@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,37 +8,47 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario  Int               @id_usuario @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   nombre      String
   correo      String            @unique
   clave       String
-  descripcion String
+  descripcion String?
+  estado      Boolean
+
+  correosEnviados Correo[] @relation("Emisor")
+  correosRecibidos ReceptorCorreo[]
+  bloqueados       UsuarioBloqueado[] @relation("BloqueadorRelation")
+  bloqueadores     UsuarioBloqueado[] @relation("BloqueadoRelation")
 }
 
 model Correo {
-  id_correo  Int              @id_correo @default(autoincrement())
-  id_emisor  Int
+  id         Int              @id @default(autoincrement())
+  emisorId   Int
   contenido  String
   favorito   Boolean
 
-  Emisor     Usuario          @relation("Emisor", fields: [id_emisor], references: [id_usuario])
+  emisor     Usuario          @relation("Emisor", fields: [emisorId], references: [id])
   receptores ReceptorCorreo[]
 }
 
 model ReceptorCorreo {
+  id        Int     @id @default(autoincrement())
   correoId  Int
   usuarioId Int
 
-  correo  Correo  @relation(fields: [correoId], references: [id_correo])
-  usuario Usuario @relation(fields: [usuarioId], references: [id_usuario])
+  correo  Correo  @relation(fields: [correoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([correoId, usuarioId])
 }
 
 model UsuarioBloqueado {
+  id            Int    @id @default(autoincrement())
   bloqueadorId  Int
   bloqueadoId   Int
 
-  bloqueador Usuario @relation("Bloqueador", fields: [bloqueadorId], references: [id_usuario])
-  bloqueado  Usuario @relation("Bloqueado", fields: [bloqueadoId], references: [id_usuario])
+  bloqueador Usuario @relation("BloqueadorRelation", fields: [bloqueadorId], references: [id])
+  bloqueado  Usuario @relation("BloqueadoRelation", fields: [bloqueadoId], references: [id])
 
   @@unique([bloqueadorId, bloqueadoId])
 }
