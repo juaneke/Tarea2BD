@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario  Int               @id @default(autoincrement())
+  id_usuario  Int               @id_usuario @default(autoincrement())
   nombre      String
   correo      String            @unique
   clave       String
@@ -22,7 +22,7 @@ model Usuario {
 }
 
 model Correo {
-  id_correo  Int              @id @default(autoincrement())
+  id_correo  Int              @id_correo @default(autoincrement())
   id_emisor  Int
   contenido  String
   favorito   Boolean
@@ -32,7 +32,7 @@ model Correo {
 }
 
 model ReceptorCorreo {
-  correoId Int
+  correoId  Int
   usuarioId Int
 
   correo  Correo  @relation(fields: [correoId], references: [id_correo])
