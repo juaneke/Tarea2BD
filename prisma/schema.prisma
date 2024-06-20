@@ -14,28 +14,37 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario  Int
+  id_usuario  Int               @id @default(autoincrement())
   nombre      String
-  correo      String 
+  correo      String            @unique
   clave       String
   descripcion String
 }
 
 model Correo {
-  id_correo  Int
-  remitente @relation("remitente", fields: [bloqueadorId], references: [id_usuario])
+  id_correo  Int              @id @default(autoincrement())
+  id_emisor  Int
   contenido  String
   favorito   Boolean
+
+  Emisor     Usuario          @relation("Emisor", fields: [id_emisor], references: [id_usuario])
+  receptores ReceptorCorreo[]
 }
 
-model Destinatarios {
-  id_correo Int
+model ReceptorCorreo {
+  correoId Int
   usuarioId Int
+
+  correo  Correo  @relation(fields: [correoId], references: [id_correo])
+  usuario Usuario @relation(fields: [usuarioId], references: [id_usuario])
 }
 
 model UsuarioBloqueado {
+  bloqueadorId  Int
+  bloqueadoId   Int
+
   bloqueador Usuario @relation("Bloqueador", fields: [bloqueadorId], references: [id_usuario])
-  bloqueado  Usuario @relation("Bloqueado", fields: [bloqueadoId], references: [correo])
+  bloqueado  Usuario @relation("Bloqueado", fields: [bloqueadoId], references: [id_usuario])
 
   @@unique([bloqueadorId, bloqueadoId])
 }
