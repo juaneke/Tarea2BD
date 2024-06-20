@@ -13,7 +13,6 @@ model Usuario {
   correo      String            @unique
   clave       String
   descripcion String?
-  estado      Boolean
 
   correosEnviados Correo[] @relation("Emisor")
   correosRecibidos ReceptorCorreo[]
