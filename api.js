@@ -16,7 +16,7 @@ app.post('/api/registrar', async (req, res) => {
     }
 });
 
-// Otros endpoints...
+
 
 app.listen(5432, () => {
     console.log('API running on http://localhost:5432');

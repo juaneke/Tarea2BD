@@ -32,7 +32,6 @@ model Correo {
 }
 
 model ReceptorCorreo {
-  id        Int     @id @default(autoincrement())
   correoId  Int
   usuarioId Int
 
@@ -43,7 +42,6 @@ model ReceptorCorreo {
 }
 
 model UsuarioBloqueado {
-  id            Int    @id @default(autoincrement())
   bloqueadorId  Int
   bloqueadoId   Int
 
