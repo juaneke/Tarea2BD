@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,30 +28,30 @@ model Usuario {
 
 model Correo {
   id         Int              @id @default(autoincrement())
-  emisorId   Int
+  emisor_correo   String
   contenido  String
   favorito   Boolean
 
-  emisor     Usuario          @relation("Emisor", fields: [emisorId], references: [id])
+  emisor     Usuario          @relation("Emisor", fields: [emisor_correo], references: [correo])
   receptores ReceptorCorreo[]
 }
 
 model ReceptorCorreo {
   correoId  Int
-  usuarioId Int
+  receptor String
 
   correo  Correo  @relation(fields: [correoId], references: [id])
-  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  usuario Usuario @relation(fields: [receptor], references: [correo])
 
-  @@unique([correoId, usuarioId])
+  @@unique([correoId, receptor])
 }
 
 model UsuarioBloqueado {
-  bloqueadorId  Int
-  bloqueadoId   Int
+  bloqueadorCorreo  String
+  bloqueadoCorreo   String
 
-  bloqueador Usuario @relation("BloqueadorRelation", fields: [bloqueadorId], references: [id])
-  bloqueado  Usuario @relation("BloqueadoRelation", fields: [bloqueadoId], references: [id])
+  bloqueador Usuario @relation("BloqueadorRelation", fields: [bloqueadorCorreo], references: [correo])
+  bloqueado  Usuario @relation("BloqueadoRelation", fields: [bloqueadoCorreo], references: [correo])
 
-  @@unique([bloqueadorId, bloqueadoId])
+  @@unique([bloqueadorCorreo, bloqueadoCorreo])
 }

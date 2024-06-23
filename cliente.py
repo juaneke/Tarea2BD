@@ -1,12 +1,12 @@
 import requests
 
-API_URL = "http://localhost:5432/api"
+API_URL = "http://localhost:3000"
 
 def login():
     while True:
         correo = input("Correo electrónico: ")
         clave = input("Clave: ")
-        response = requests.post(f"{API_URL}/login", json={"correo": correo, "clave": clave})
+        response = requests.post(f"{API_URL}/login", json={"direccion_correo": correo, "clave": clave})
         data = response.json()
         if response.status_code == 200:
             print(data['mensaje'])
@@ -25,12 +25,12 @@ def registrar():
         descripcion = input("Descripción: ")
         response = requests.post(f"{API_URL}/registrar", json={
             "nombre": nombre,
-            "correo": correo,
+            "direccion_correo": correo,
             "clave": clave,
             "descripcion": descripcion
         })
         data = response.json()
-        print(data['mensaje'])
+        print(response.status_code)
         if response.status_code == 200:
             return True, correo, clave
         else:
@@ -38,24 +38,35 @@ def registrar():
             if retry.lower() != 's':
                 return False, None, None
 
-def menu():
-    print("1. Enviar un correo")
-    print("2. Ver información de una dirección de correo electrónico")
-    print("3. Ver correos marcados como favoritos")
-    print("4. Marcar correo como favorito")
-    print("5. Terminar con la ejecución del cliente")
-    return input("Seleccione una opción: ")
-
-def enviar_correo():
-    remitente = input("Remitente: ")
-    destinatario = input("Destinatario: ")
+def r_correo():
+    remitente = input("ID del Remitente (número): ")
+    destinatarios = input("IDs de los Destinatarios (separados por comas): ")
     asunto = input("Asunto: ")
     contenido = input("Contenido: ")
     response = requests.post(f"{API_URL}/enviarcorreo", json={
-        "remitente": remitente,
-        "destinatario": destinatario,
+        "remitenteId": int(remitente),
+        "destinatarios": [int(id) for id in destinatarios.split(',')],
         "asunto": asunto,
         "contenido": contenido
+    })
+    data = response.json()
+    print(data.get('mensaje', 'No hay mensaje de respuesta'))
+
+def menu():
+    print("1. Bloquear un usuario")
+    print("2. Ver información de una dirección de correo electrónico")
+    print("3. Marcar correo como favorito")
+    print("4. Desmarcar correo como favorito")
+    print("n5. Redactar un correo")
+    print("5. Terminar con la ejecución del cliente")
+    return input("Seleccione una opción: ")
+
+def bloquear_usuario(correo, clave):
+    correo_bloquear = input("Correo del usuario a bloquear: ")
+    response = requests.post(f"{API_URL}/bloquear", json={
+        "correo": correo,
+        "clave": clave,
+        "correo_bloquear": correo_bloquear
     })
     print(response.json())
 
@@ -64,13 +75,22 @@ def ver_informacion():
     response = requests.get(f"{API_URL}/informacion/{correo}")
     print(response.json())
 
-def ver_favoritos(correo, clave):
-    response = requests.post(f"{API_URL}/verfavoritos", json={"correo": correo, "clave": clave})
-    print(response.json())
-
 def marcar_favorito(correo, clave):
     id_correo = input("ID del correo a marcar como favorito: ")
-    response = requests.post(f"{API_URL}/marcarcorreo", json={"correo": correo, "clave": clave, "id_correo_favorito": int(id_correo)})
+    response = requests.post(f"{API_URL}/marcarcorreo", json={
+        "correo": correo,
+        "clave": clave,
+        "id_correo_favorito": int(id_correo)
+    })
+    print(response.json())
+
+def desmarcar_favorito(correo, clave):
+    id_correo = input("ID del correo a desmarcar como favorito: ")
+    response = requests.delete(f"{API_URL}/desmarcarcorreo", json={
+        "correo": correo,
+        "clave": clave,
+        "id_correo_favorito": int(id_correo)
+    })
     print(response.json())
 
 def main():
@@ -85,13 +105,13 @@ def main():
                 while True:
                     opcion = menu()
                     if opcion == '1':
-                        enviar_correo()
+                        bloquear_usuario(correo, clave)
                     elif opcion == '2':
                         ver_informacion()
                     elif opcion == '3':
-                        ver_favoritos(correo, clave)
-                    elif opcion == '4':
                         marcar_favorito(correo, clave)
+                    elif opcion == '4':
+                        desmarcar_favorito(correo, clave)
                     elif opcion == '5':
                         print("Terminando la ejecución del cliente...")
                         break
@@ -107,13 +127,13 @@ def main():
                 while True:
                     opcion = menu()
                     if opcion == '1':
-                        enviar_correo()
+                        bloquear_usuario(correo, clave)
                     elif opcion == '2':
                         ver_informacion()
                     elif opcion == '3':
-                        ver_favoritos(correo, clave)
-                    elif opcion == '4':
                         marcar_favorito(correo, clave)
+                    elif opcion == '4':
+                        desmarcar_favorito(correo, clave)
                     elif opcion == '5':
                         print("Terminando la ejecución del cliente...")
                         break
@@ -124,5 +144,4 @@ def main():
         else:
             print("Opción inválida, por favor intente de nuevo.")
 
-if __name__ == "__main__":
-    main()
+main()
