@@ -68,13 +68,13 @@ def bloquear_usuario(correo, clave):
         "clave": clave,
         "correo_bloquear": correo_bloquear
     })
-    print(response.json())
+    print('Error: ',data['estado'],' ',data['mensaje'])
     
 
 def ver_informacion():
     correo = input("Correo electrónico: ")
     response = requests.get(f"{API_URL}/informacion/{correo}")
-    print(response.json())
+    print('Error: ',data['estado'],' ',data['mensaje'])
 
 def marcar_favorito(correo, clave):
     id_correo = input("ID del correo a marcar como favorito: ")
@@ -83,7 +83,7 @@ def marcar_favorito(correo, clave):
         "clave": clave,
         "id_correo_favorito": int(id_correo)
     })
-    print(response.json())
+    print('Error: ',data['estado'],' ',data['mensaje'])
 
 def desmarcar_favorito(correo, clave):
     id_correo = input("ID del correo a desmarcar como favorito: ")
@@ -92,10 +92,10 @@ def desmarcar_favorito(correo, clave):
         "clave": clave,
         "id_correo_favorito": int(id_correo)
     })
-    print(response.json())
+    print('Error: ',data['estado'],' ',data['mensaje'])
 
 def main():
-    print("Bienvenido a CorreosCTM")
+    print("Bienvenidos a CommuniKen ")
     while True:
         print("1: Iniciar sesión")
         print("2: Registrarse")
