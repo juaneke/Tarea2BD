@@ -8,7 +8,7 @@ def login():
         clave = input("Clave: ")
         response = requests.post(f"{API_URL}/login", json={"direccion_correo": correo, "clave": clave})
         data = response.json()
-        if response.status_code == 200:
+        if data['estado'] == 200:
             print(data['mensaje'])
             return correo, clave
         else:
@@ -30,35 +30,35 @@ def registrar():
             "descripcion": descripcion
         })
         data = response.json()
-        print(response.status_code)
-        if response.status_code == 200:
+        if data['estado'] == 200:
+            print(data['mensaje'])
             return True, correo, clave
         else:
+            print(data['mensaje'])
             retry = input("¿Desea intentar nuevamente? (s/n): ")
             if retry.lower() != 's':
                 return False, None, None
 
-def r_correo():
-    remitente = input("ID del Remitente (número): ")
-    destinatarios = input("IDs de los Destinatarios (separados por comas): ")
-    asunto = input("Asunto: ")
+def r_correo(correo):
+    
+    destinatario = input("Correo destinatario: ")
     contenido = input("Contenido: ")
     response = requests.post(f"{API_URL}/enviarcorreo", json={
-        "remitenteId": int(remitente),
-        "destinatarios": [int(id) for id in destinatarios.split(',')],
-        "asunto": asunto,
-        "contenido": contenido
+        "emisor": correo,
+        "destinatario": destinatario,
+        "contenido": contenido,
+        "favorito" : False
     })
     data = response.json()
-    print(data.get('mensaje', 'No hay mensaje de respuesta'))
+    print('Error: ',data['estado'],' ',data['mensaje'])
 
 def menu():
     print("1. Bloquear un usuario")
     print("2. Ver información de una dirección de correo electrónico")
     print("3. Marcar correo como favorito")
     print("4. Desmarcar correo como favorito")
-    print("n5. Redactar un correo")
-    print("5. Terminar con la ejecución del cliente")
+    print("5. Redactar un correo")
+    print("6. Terminar con la ejecución del cliente")
     return input("Seleccione una opción: ")
 
 def bloquear_usuario(correo, clave):
@@ -69,6 +69,7 @@ def bloquear_usuario(correo, clave):
         "correo_bloquear": correo_bloquear
     })
     print(response.json())
+    
 
 def ver_informacion():
     correo = input("Correo electrónico: ")
@@ -113,6 +114,8 @@ def main():
                     elif opcion == '4':
                         desmarcar_favorito(correo, clave)
                     elif opcion == '5':
+                        r_correo(correo)
+                    elif opcion == '6':
                         print("Terminando la ejecución del cliente...")
                         break
                     else:
@@ -135,6 +138,8 @@ def main():
                     elif opcion == '4':
                         desmarcar_favorito(correo, clave)
                     elif opcion == '5':
+                        r_correo(correo)
+                    elif opcion == '6':
                         print("Terminando la ejecución del cliente...")
                         break
                     else:

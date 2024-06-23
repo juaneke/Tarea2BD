@@ -21,7 +21,8 @@ model Usuario {
   descripcion String?
 
   correosEnviados Correo[] @relation("Emisor")
-  correosRecibidos ReceptorCorreo[]
+  correosRecibidos Correo[] @relation("Receptor")
+
   bloqueados       UsuarioBloqueado[] @relation("BloqueadorRelation")
   bloqueadores     UsuarioBloqueado[] @relation("BloqueadoRelation")
 }
@@ -29,21 +30,12 @@ model Usuario {
 model Correo {
   id         Int              @id @default(autoincrement())
   emisor_correo   String
+  receptor_correo String
   contenido  String
   favorito   Boolean
-
+   
   emisor     Usuario          @relation("Emisor", fields: [emisor_correo], references: [correo])
-  receptores ReceptorCorreo[]
-}
-
-model ReceptorCorreo {
-  correoId  Int
-  receptor String
-
-  correo  Correo  @relation(fields: [correoId], references: [id])
-  usuario Usuario @relation(fields: [receptor], references: [correo])
-
-  @@unique([correoId, receptor])
+  receptor   Usuario          @relation("Receptor", fields: [receptor_correo], references: [correo])
 }
 
 model UsuarioBloqueado {
