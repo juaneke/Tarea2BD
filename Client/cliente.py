@@ -68,12 +68,14 @@ def bloquear_usuario(correo, clave):
         "clave": clave,
         "correo_bloquear": correo_bloquear
     })
+    data = response.json()
     print('Error: ',data['estado'],' ',data['mensaje'])
     
 
 def ver_informacion():
     correo = input("Correo electrónico: ")
     response = requests.get(f"{API_URL}/informacion/{correo}")
+    data = response.json()
     print('Error: ',data['estado'],' ',data['mensaje'])
 
 def marcar_favorito(correo, clave):
@@ -83,6 +85,7 @@ def marcar_favorito(correo, clave):
         "clave": clave,
         "id_correo_favorito": int(id_correo)
     })
+    data = response.json()
     print('Error: ',data['estado'],' ',data['mensaje'])
 
 def desmarcar_favorito(correo, clave):
@@ -92,6 +95,7 @@ def desmarcar_favorito(correo, clave):
         "clave": clave,
         "id_correo_favorito": int(id_correo)
     })
+    data = response.json()
     print('Error: ',data['estado'],' ',data['mensaje'])
 
 def main():
@@ -99,6 +103,7 @@ def main():
     while True:
         print("1: Iniciar sesión")
         print("2: Registrarse")
+        print("3: Cerrar programa")
         respuesta = input("Seleccione una opción: ")
         if respuesta == "1":
             correo, clave = login()
@@ -116,7 +121,7 @@ def main():
                     elif opcion == '5':
                         r_correo(correo)
                     elif opcion == '6':
-                        print("Terminando la ejecución del cliente...")
+                        print("Regresando a la pantalla de inicio...")
                         break
                     else:
                         print("Opción inválida, por favor intente de nuevo.")
@@ -140,12 +145,15 @@ def main():
                     elif opcion == '5':
                         r_correo(correo)
                     elif opcion == '6':
-                        print("Terminando la ejecución del cliente...")
+                        print("Regresando a la pantalla de inicio...")
                         break
                     else:
                         print("Opción inválida, por favor intente de nuevo.")
             else:
                 print("Registro fallido.")
+        elif respuesta == "3":
+            print("Gracias por preferir CommuniKen")
+            break
         else:
             print("Opción inválida, por favor intente de nuevo.")
 
