@@ -14,5 +14,5 @@
 5. Con pgAdmin crea un nuevo proyecto
 5. Desde el arachivo env configura la url segun tu proyecto creado anteriormente
 6. Abre dos terminales dentro del vscode del proyecto
-7. En la primera ejecuta el comando: "bun run dev"
-8. En la segunda ejecuta el comando: python cliente.py y podras ejecutar el cliente !!!
+7. En la primera ejecuta el comando: "cd Api" y luego "bun run dev"
+8. En la segunda ejecuta el comando: "cd Client" y luego "python cliente.py" y podras ejecutar el cliente !!!
